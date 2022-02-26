@@ -11,7 +11,7 @@ from hand_coded_lane_follower import HandCodedLaneFollower
 from servo import servo_motor
 s = servo_motor()
 
-_SHOW_IMAGE = True
+_SHOW_IMAGE = False
 
 # steering 
 
@@ -111,7 +111,7 @@ class DeepPiCar(object):
 
             image_lane = self.follow_lane(image_lane)
             self.video_lane.write(image_lane)
-            show_image('Lane Lines', image_lane)
+            #show_image('Lane Lines', image_lane)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 self.cleanup()

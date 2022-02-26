@@ -19,7 +19,7 @@ class EndToEndLaneFollower(object):
 
     def __init__(self,
                  car=None,
-                 model_path='/home/pi/DeepPiCar/models/lane_navigation/data/model_result/lane_navigation.h5'):
+                 model_path='/home/pi/deepcar/pi/models/lane_navigation.h5'):
         logging.info('Creating a EndToEndLaneFollower...')
 
         self.car = car
@@ -147,7 +147,7 @@ def test_video(video_file):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    test_video('/home/pi/DeepPiCar/models/lane_navigation/data/images/video01')
+    #test_video('/home/pi/DeepPiCar/models/lane_navigation/data/images/video01')
     #test_photo('/home/pi/DeepPiCar/models/lane_navigation/data/images/video01_100_084.png')
     # test_photo(sys.argv[1])
     # test_video(sys.argv[1])
