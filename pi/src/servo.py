@@ -14,8 +14,8 @@ class servo_motor ():
 
     def spin(self, val):
 
-        if (val < 0) or (val > 180):
-            print ("Please Enter a Value Between 0 and 180")
+        if (val <= 0) or (val >= 180):
+            print (str(val), " out of range")
         else:
             value = (val*11.1111111) + 500
             value2 = (((val+5)*11.1111111))+500

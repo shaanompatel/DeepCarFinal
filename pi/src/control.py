@@ -34,15 +34,21 @@ while True:
 		print('Stop')
 
 	if keypress == readchar.key.LEFT:
-		print('Turn Left')
-		angle += ANGLE_STEP
-		s.spin(angle)
+		if (angle < 180 - ANGLE_STEP):
+			print('Turn Left')
+			angle += ANGLE_STEP
+			s.spin(angle)
+		else:
+			print ("Staying at", str(angle))
 
 	if keypress == readchar.key.RIGHT:
-		print('Turn Right')
-		angle -= ANGLE_STEP
-		s.spin(angle)
-
+		if (angle > ANGLE_STEP):
+			print('Turn Right')
+			angle -= ANGLE_STEP
+			s.spin(angle)
+		else:
+			print ("Staying at", str(angle))
+			
 	if keypress == readchar.key.CTRL_C:
 		print("Quit...")
 		GPIO.output(GPIO_DRIVE_PIN, DRIVE_STOP)
