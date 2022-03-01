@@ -4,16 +4,18 @@ import readchar
 from servo import servo_motor
 import RPi.GPIO as GPIO
 
+# constants
 ANGLE_STEP = 5
 DEFAULT_ANGLE = 90
 
-GPIO_DRIVE_PIN = 27
-DRIVE_FORWARD = 1
-DRIVE_STOP = 0
+GPIO_DRIVE_PIN = 17
+DRIVE_FORWARD = True 
+DRIVE_STOP = not DRIVE_FORWARD 
 
 # init drive motor
 GPIO.setmode(GPIO.BCM) 			# choose BCM to use GPIO numbers instead of pin numbers
 GPIO.setup(GPIO_DRIVE_PIN, GPIO.OUT)    # change to output
+GPIO.output(GPIO_DRIVE_PIN, DRIVE_STOP)
 
 # init servo steering
 s = servo_motor()
