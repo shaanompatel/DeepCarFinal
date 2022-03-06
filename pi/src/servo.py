@@ -17,8 +17,8 @@ class servo_motor ():
         if (val <= 0) or (val >= 180):
             print (str(val), " out of range")
         else:
-            value = (val*11.1111111) + 500
-            value2 = (((val+5)*11.1111111))+500
+            value = ((val)*11.1111111) + 500
+            value2 = (((val)*11.1111111))+500
             self.pwm.set_servo_pulsewidth( self.servo, value)
             self.pwm.set_servo_pulsewidth( self.servo2, value2)
 
