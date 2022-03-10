@@ -4,7 +4,7 @@ import sys
 
 def main():
     # print system info
-    logging.info('Starting DeepPiCar, system info: ' + sys.version)
+    logging.info('Starting deepcar, system info: ' + sys.version)
     
     with DeepPiCar() as car:
         car.drive(40)
