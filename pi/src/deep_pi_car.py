@@ -7,6 +7,7 @@ import pigpio
 import time
 from end_to_end_lane_follower import EndToEndLaneFollower
 from hand_coded_lane_follower import HandCodedLaneFollower
+from object_processor import ObjectsProcessor
 #from objects_on_road_processor import ObjectsOnRoadProcessor
 from servo import servo_motor
 from sabertooth import motor
@@ -15,14 +16,12 @@ m = motor()
 
 _SHOW_IMAGE = False
 
-
-
-
 class DeepPiCar(object):
 
-    #__INITIAL_SPEED = 0
+    __INITIAL_SPEED = 0
     __SCREEN_WIDTH = 320
     __SCREEN_HEIGHT = 240
+    #self.car_speed = 40
 
     def __init__(self):
         """ Init camera and wheels"""
@@ -48,6 +47,7 @@ class DeepPiCar(object):
 
         #self.lane_follower = HandCodedLaneFollower(self)
         #self.traffic_sign_processor = ObjectsOnRoadProcessor(self)
+        self.object_detector = ObjectsProcessor(self)
         self.lane_follower = EndToEndLaneFollower(self)
 
         self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -83,16 +83,20 @@ class DeepPiCar(object):
         self.video_lane.release()
         self.video_objs.release()
         cv2.destroyAllWindows()
+    
+    def change_speed(self, speed):
+        m.move(speed)
+        
 
-    def drive(self):
+    def drive(self, speed=__INITIAL_SPEED):
         """ Main entry point of the car, and put it in drive mode
 
         Keyword arguments:
         speed -- speed of back wheel, range is 0 (stop) - 100 (fastest)
         """
 
-        logging.info('Starting to drive forward....")
-        m.move(True)
+        logging.info('Starting to drive forward....')
+        m.move(speed)
 
         i = 0
         while self.camera.isOpened():
@@ -100,11 +104,12 @@ class DeepPiCar(object):
             image_objs = image_lane.copy()
             i += 1
             self.video_orig.write(image_lane)
-
-            #image_objs = self.process_objects_on_road(image_objs)
-            #self.video_objs.write(image_objs)
-            #show_image('Detected Objects', image_objs)
-
+            ret, frame = self.camera.read()
+            if not ret:
+                break
+            cv2_im = frame  
+            self.object_detector.process_frame(cv2_im)
+            
             image_lane = self.follow_lane(image_lane)
             self.video_lane.write(image_lane)
             #show_image('Lane Lines', image_lane)
