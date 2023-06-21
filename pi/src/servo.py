@@ -1,7 +1,6 @@
 #import RPi.GPIO as GPIO
 import pigpio
 
-
 class servo_motor ():
     def __init__(self):
         self.servo = 15
@@ -13,7 +12,6 @@ class servo_motor ():
         self.pwm.set_PWM_frequency( self.servo2, 50 )
 
     def spin(self, val):
-
         if (val <= 0) or (val >= 180):
             print (str(val), " out of range")
         else:
@@ -21,7 +19,6 @@ class servo_motor ():
             value2 = (((val)*11.1111111)) + 500
             self.pwm.set_servo_pulsewidth( self.servo, value)
             self.pwm.set_servo_pulsewidth( self.servo2, value2)
-
         return None
 
     

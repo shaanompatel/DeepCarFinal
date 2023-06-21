@@ -5,6 +5,7 @@ import datetime
 #import RPi.GPIO as GPIO
 import pigpio
 import time
+import readchar
 from end_to_end_lane_follower import EndToEndLaneFollower
 from hand_coded_lane_follower import HandCodedLaneFollower
 from object_processor import ObjectsProcessor
@@ -14,7 +15,7 @@ from sabertooth import motor
 s = servo_motor()
 m = motor()
 
-_SHOW_IMAGE = False
+_SHOW_IMAGE = True
 
 class DeepPiCar(object):
 
@@ -30,13 +31,12 @@ class DeepPiCar(object):
        
 
         logging.debug('Set up camera')
-        self.camera = cv2.VideoCapture(-1)
+        self.camera = cv2.VideoCapture(0)
         self.camera.set(3, self.__SCREEN_WIDTH)
         self.camera.set(4, self.__SCREEN_HEIGHT)
-
-        
-        
-
+        self.cap = cv2.VideoCapture(2)
+        self.cap.set(3, self.__SCREEN_WIDTH/1.5)
+        self.cap.set(4, self.__SCREEN_HEIGHT/1.5)
         
 
         logging.debug('Set up back wheels')
@@ -85,6 +85,7 @@ class DeepPiCar(object):
         cv2.destroyAllWindows()
     
     def change_speed(self, speed):
+        print("changed speed to ", speed)
         m.move(speed)
         
 
@@ -95,28 +96,48 @@ class DeepPiCar(object):
         speed -- speed of back wheel, range is 0 (stop) - 100 (fastest)
         """
 
+        
         logging.info('Starting to drive forward....')
-        m.move(speed)
+
+        #m.move(speed)
 
         i = 0
-        while self.camera.isOpened():
+        first = 0
+        start = time.time()
+        while (self.camera.isOpened() and self.cap.isOpened()):
             _, image_lane = self.camera.read()
             image_objs = image_lane.copy()
             i += 1
             self.video_orig.write(image_lane)
             ret, frame = self.camera.read()
-            if not ret:
+            if not (ret):
                 break
-            cv2_im = frame  
-            self.object_detector.process_frame(cv2_im)
-            
+            cv2_im = frame
             image_lane = self.follow_lane(image_lane)
             self.video_lane.write(image_lane)
-            #show_image('Lane Lines', image_lane)
+           
+            if (time.time() - start > 8):
+                _, image_obj = self.cap.read()
+                if image_obj is not None:
+                    image_objects = image_obj.copy()
+                    ret2, obj_frame = self.cap.read()
+                    if not ret2:
+                        break
+                    cv2_im_obj = obj_frame  
+                    self.object_detector.process_frame(obj_frame)
+                if first == 0:
+                    m.move(40)
+                first+=1
+
+
+            show_image('Lane Lines', image_lane)
+            #show_image('Objects', image_obj)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 self.cleanup()
                 break
+            
+            
 
     #def process_objects_on_road(self, image):
      #   image = self.traffic_sign_processor.process_objects_on_road(image)

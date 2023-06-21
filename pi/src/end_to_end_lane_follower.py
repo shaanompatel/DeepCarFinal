@@ -9,11 +9,7 @@ from hand_coded_lane_follower import HandCodedLaneFollower
 
 _SHOW_IMAGE = False
 
-
 s = servo_motor()
-
-
-
 
 class EndToEndLaneFollower(object):
 
@@ -26,8 +22,6 @@ class EndToEndLaneFollower(object):
         self.curr_steering_angle = 90
         self.model = load_model(model_path)
     
-
-
     def follow_lane(self, frame):
         # Main entry point of the lane follower
         show_image("orig", frame)
@@ -41,7 +35,6 @@ class EndToEndLaneFollower(object):
 
         return final_frame
     
-
     def compute_steering_angle(self, frame):
         """ Find the steering angle directly based on video frame
             We assume that camera is calibrated to point to dead center
@@ -53,8 +46,6 @@ class EndToEndLaneFollower(object):
         logging.debug('new steering angle: %s' % steering_angle)
         return int(steering_angle + 0.5) # round the nearest integer
     
-
-
 def img_preprocess(image):
     height, _, _ = image.shape
     image = image[int(height/2):,:,:]  # remove top half of the image, as it is not relevant for lane following
@@ -76,7 +67,7 @@ def display_heading_line(frame, steering_angle, line_color=(0, 0, 255), line_wid
     # 0-89 degree: turn left
     # 90 degree: going straight
     # 91-180 degree: turn right 
-    steering_angle_radian = steering_angle / 180.0 * math.pi
+    steering_angle_radian = (180-steering_angle) / 180.0 * math.pi
     x1 = int(width / 2)
     y1 = height
     x2 = int(x1 - height / 2 / math.tan(steering_angle_radian))

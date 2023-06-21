@@ -1,0 +1,5 @@
+stop
+person
+speed limit
+red light
+slow

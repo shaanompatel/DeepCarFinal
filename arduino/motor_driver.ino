@@ -2,8 +2,8 @@
 Servo sabertooth;
 int raspiSwitch = 0;
 int raspiSwitchSlow = 0;
-int raspiPin = 11;
-int raspiPin2 = 12;
+int raspiPin = 8;
+int raspiPin2 = 9;
 bool FAST = false;
 bool SLOW = false;
 
@@ -22,14 +22,15 @@ void loop() {
   SLOW = (raspiSwitchSlow == 1);
 
   if (SLOW && !(FAST)){
-    sabertooth.write(115);
+    sabertooth.write(130);
   }
   else if (!(SLOW || FAST)){
     sabertooth.write(100);
   }
   else{
-    sabertooth.write(135);
+    sabertooth.write(145);
   }
+}
 
   /*
   old:
@@ -42,4 +43,3 @@ void loop() {
     sabertooth.write(135);
   }
   */
-}
